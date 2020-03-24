@@ -1,4 +1,6 @@
 import sys
+import heapq
+from queue import PriorityQueue
 from copy import deepcopy
 
 class Matrix:
@@ -97,6 +99,9 @@ class Matrix:
         for i in range (1, 16):
             ret += self.fungsiKurangI(i)
         ret += self.fungsiKurangI('')
+        p = self.search('')
+        if (((p.x+p.y)%2) == 1):
+            ret += 1
         return ret
 
 
@@ -121,3 +126,5 @@ def readFile(input):
     return matrix
 
 mat = Matrix(readFile("input.txt"))
+x = mat.fungsiKurangAll()
+print(x)
