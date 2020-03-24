@@ -5,15 +5,15 @@ from copy import deepcopy
 
 class Matrix:
     matrix = []
-    weight = 0
+    bobot = 0
 
     def __init__(self):    
         self.matrix = []
-        self.weight = 0
+        self.bobot = 0
     
     def __init__(self, mat):
         self.matrix = mat
-        self.weight = 0
+        self.bobot = 0
 
     def print(self):
         print('-------------')
@@ -104,6 +104,23 @@ class Matrix:
             ret += 1
         return ret
 
+    def myBobot(self):
+        ret = 0
+        value = 1
+        for i in range (3):
+            for j in range (4):
+                if (self.matrix[i][j] != str(value)):
+                    ret+=1
+                    print(str(i) + " " + str(j))
+                value+=1
+        
+        for j in range (3):
+            if (self.matrix[3][j] != str(value)):
+                ret+=1
+                print(str(i) + " " + str(j))
+            value+=1 
+
+        print(ret)
 
 class Point:
     def __init__(self):    
@@ -126,5 +143,4 @@ def readFile(input):
     return matrix
 
 mat = Matrix(readFile("input.txt"))
-x = mat.fungsiKurangAll()
-print(x)
+mat.myBobot()
