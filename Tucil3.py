@@ -7,14 +7,16 @@ from copy import deepcopy
 # Kelas Matrix
 class Matrix:
     matrix = []
-    bobot = 0
+    bobot = -1
     stepBefore = ""
+    index = 1
 
     # Konstruktor
     def __init__(self, mat):
         self.matrix = mat
         self.bobot = 0
         self.stepBefore = ""
+        index = ""
 
     # Matrix less than
     def __lt__(self, other):
@@ -167,35 +169,43 @@ stepBefore = ""
 
 # Load file
 matExpand = Matrix(readFile("input.txt"))
+
+# Print kondisi awal
+
+print("Kondisi Awal Puzzle")
+matExpand.print()
+
 track.append(matExpand)
 heapq.heapify(matHidup)
 
 # Priority : Up, Right, Down, Left
 # Start execution
 start_time = time.time()
-while not(stop):
-    if(matExpand.myBobot() == 0):
-        stop = True
-        
+while not(matExpand.myBobot() == 0):
     empty = matExpand.search('')
+
+    # Ekspan Up
     if (empty.x != 0 and stepBefore != "down"):
         matUp = matExpand.moveUp()
         matUp.bobot = matUp.myBobot() + aras
         matUp.stepBefore = "up"
         heapq.heappush(matHidup,matUp)
-        
+    
+    # Ekspan Right
     if (empty.y != 3 and stepBefore != "left"):
         matRight = matExpand.moveRight()
         matRight.bobot = matRight.myBobot() + aras    
         matRight.stepBefore = "right"    
         heapq.heappush(matHidup,matRight)
 
+    # Ekspan Down
     if (empty.x != 3 and stepBefore != "up"):
         matDown = matExpand.moveDown()
         matDown.bobot = matDown.myBobot() + aras
         matDown.stepBefore = "down"
         heapq.heappush(matHidup,matDown)
 
+    # Ekspan Left
     if (empty.y != 0 and stepBefore != "right"):
         matLeft = matExpand.moveLeft()
         matLeft.bobot = matLeft.myBobot() + aras
@@ -203,14 +213,20 @@ while not(stop):
         heapq.heappush(matHidup,matLeft)
 
     heapq.heapify(matHidup)
+    # get matExpand from matHidup
     matExpand = heapq.heappop(matHidup)
     track.append(matExpand)
+    # aras = f(i)
     aras += 1
     stepBefore = matExpand.stepBefore
 end_time = time.time()
+# End Execution
 
-# track = track[:-1]
+
+
+# Print langkah
 for i in range (len(track)):
     track[i].print()
 
-waktu = start_time - end_time   
+# Execution time
+waktu = start_time - end_time
