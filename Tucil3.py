@@ -25,15 +25,14 @@ class Matrix:
                     sys.stdout.write('|' + self.matrix[i][j])
             print('|' + '\n-------------');
 
-    def searchEmpty(self):
+    def search(self, x):
         p = Point()
         found = False
-                
         i = 0
         while i < 4 and not(found):
             j = 0
             while j < 4 and not(found):
-                if self.matrix[i][j] == '':
+                if self.matrix[i][j] == x:
                     p.x = i
                     p.y = j
                     found = True
@@ -45,7 +44,7 @@ class Matrix:
     def moveUp(self):
         m = Matrix([])
         m.matrix = deepcopy(self.matrix)
-        p = self.searchEmpty()
+        p = self.searc('')
         m.matrix[p.x][p.y] = self.matrix[p.x-1][p.y]
         m.matrix[p.x-1][p.y] = ''
         return m
@@ -53,7 +52,7 @@ class Matrix:
     def moveRight(self):
         m = Matrix([])
         m.matrix = deepcopy(self.matrix)
-        p = self.searchEmpty()
+        p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x][p.y+1]
         m.matrix[p.x][p.y+1] = ''
         return m
@@ -61,7 +60,7 @@ class Matrix:
     def moveDown(self):
         m = Matrix([])
         m.matrix = deepcopy(self.matrix)
-        p = self.searchEmpty()
+        p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x+1][p.y]
         m.matrix[p.x+1][p.y] = ''
         return m
@@ -69,10 +68,36 @@ class Matrix:
     def moveLeft(self):
         m = Matrix([])
         m.matrix = deepcopy(self.matrix)
-        p = self.searchEmpty()
+        p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x][p.y-1]
         m.matrix[p.x][p.y-1] = ''
         return m
+
+    def fungsiKurangI(self, z):
+        ret = 0
+        z = str(z)
+        p = self.search(z)
+        if z == '':
+            z = 16
+
+        for j in range (p.y, 4):
+            this = self.matrix[p.x][j]
+            if (this != '' and int(this) < int(z)):
+                ret += 1
+
+        for i in range (p.x+1, 4):
+            for j in range (0, 4):
+                this = self.matrix[i][j]
+                if (this != '' and int(this) < int(z)):
+                    ret += 1
+        return ret
+
+    def fungsiKurangAll(self):
+        ret = 0
+        for i in range (1, 16):
+            ret += self.fungsiKurangI(i)
+        ret += self.fungsiKurangI('')
+        return ret
 
 
 class Point:
@@ -96,7 +121,3 @@ def readFile(input):
     return matrix
 
 mat = Matrix(readFile("input.txt"))
-
-
-
-
