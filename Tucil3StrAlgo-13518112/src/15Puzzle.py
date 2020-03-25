@@ -197,15 +197,42 @@ def readFile(input):
 # Main program
 index = 1
 matHidup = []
-matGen = []         # menyimpan matriks yang sudah digenerate
+matGen = []
 empty = Point()
 stop = False
 stepBefore = ""
 matGen = set()
 
+#getInput
+print ("pilih file test")
+print("1. test1.txt")
+print("2. test2.txt")
+print("3. test3.txt")
+print("4. test4.txt")
+print("5. test5.txt")
+print ("input angka 1-5 : ", end='')
+
+select = input()
+while (int(select) > 5 or int(select) < 1):
+    print("input tidak valid")
+    print ("input angka 1-5 : ", end='')
+    select = input()
+
+if (int(select) == 1):
+    file = "../test/test1.txt"
+elif (int(select) == 2):
+    file = "../test/test2.txt"
+elif (int(select) == 3):
+    file = "../test/test3.txt"
+elif (int(select) == 4):
+    file = "../test/test4.txt"
+elif (int(select) == 5):
+    file = "../test/test5.txt"
+
+
 # Load file
-matExpand = Matrix(readFile("input.txt"))
-matAwal = Matrix(readFile("input.txt"))
+matExpand = Matrix(readFile(file))
+matAwal = Matrix(readFile(file))
 
 # Print kondisi awal
 print("Kondisi Awal Puzzle")
@@ -227,6 +254,8 @@ print("-------------------------\n")
 # Nilai dari Kurang(i)+X
 Y = matExpand.fungsiKurangAll()
 print("Sigma (KURANG(i)) + X = " + str(Y))
+if (int(select) == 3):
+    print("Mohon tunggu banyak simpul yang di generate...")
 
 # Start execution
 start_time = time.time()
