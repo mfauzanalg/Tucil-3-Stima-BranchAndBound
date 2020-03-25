@@ -35,7 +35,7 @@ class Matrix:
             return False
 
     # Print matrix
-    def print(self):
+    def printMat(self):
         print('-------------')
         for i in range (4):
             for j in range (4):
@@ -162,16 +162,16 @@ class Matrix:
             print("Step ke " + str(i+1) + " : " + self.path[i])
             if (self.path[i] == "U"):
                 m = m.moveUp()
-                m.print()
+                m.printMat()
             elif (self.path[i] == "R"):
                 m = m.moveRight()
-                m.print()
+                m.printMat()
             elif (self.path[i] == "D"):
                 m = m.moveDown()
-                m.print()
+                m.printMat()
             else:
                 m = m.moveLeft()
-                m.print()
+                m.printMat()
 
 # Kelas Point
 class Point:
@@ -210,12 +210,12 @@ print("2. test2.txt")
 print("3. test3.txt")
 print("4. test4.txt")
 print("5. test5.txt")
-print ("input angka 1-5 : ", end='')
+sys.stdout.write("input angka 1-5 : ")
 
 select = input()
 while (int(select) > 5 or int(select) < 1):
     print("input tidak valid")
-    print ("input angka 1-5 : ", end='')
+    sys.stdout.write("input angka 1-5 : ")
     select = input()
 
 if (int(select) == 1):
@@ -236,8 +236,8 @@ matAwal = Matrix(readFile(file))
 
 # Print kondisi awal
 print("Kondisi Awal Puzzle")
-matExpand.print()
-print()
+matExpand.printMat()
+print("")
 
 # Nilai fungsi kurang untuk setiap petak
 print("Fungsi Kurang untuk setiap ubin")
