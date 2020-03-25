@@ -1,18 +1,16 @@
 tc kuu
 2 3 4 8
-1 7 11 16
+1 7 11  
 5 9 6 12
 13 10 14 15
 
-
-
-yg bener 5379
+jumlah simpulnya :  5379
 2 14 10 4
 1 7 3 8
   5 6 12
 9 13 11 15
 
-Bisa ke bawah kanan
+Bisa ke bawah kanan ini ez
   2 3 4
 1 6 7 8
 5 10 11 12

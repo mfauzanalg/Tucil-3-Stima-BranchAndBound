@@ -11,7 +11,6 @@ class Matrix:
     stepBefore = ""
     index = 1
     aras = 1
-    path = []
 
     # Konstruktor
     def __init__(self, mat):
@@ -20,7 +19,6 @@ class Matrix:
         self.stepBefore = ""
         index = 1
         aras = 1
-        path = []
 
     # Matrix less than
     def __lt__(self, other):
@@ -34,6 +32,11 @@ class Matrix:
         else:
             return False
 
+        
+
+    def same (self, other):
+        return self.matrix == other.matrix
+
     # Print matrix
     def print(self):
         print('-------------')
@@ -45,8 +48,7 @@ class Matrix:
                     sys.stdout.write('| ' + self.matrix[i][j])
                 else:
                     sys.stdout.write('|' + self.matrix[i][j])
-            print('|');
-        print('-------------')
+            print('|' + '\n-------------');
 
     # Search point of x
     def search(self, x):
@@ -67,7 +69,6 @@ class Matrix:
     # Move empty space up
     def moveUp(self):
         m = Matrix([])
-        m.path = deepcopy(self.path)
         m.matrix = deepcopy(self.matrix)
         p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x-1][p.y]
@@ -77,7 +78,6 @@ class Matrix:
     # Move empty space right
     def moveRight(self):
         m = Matrix([])
-        m.path = deepcopy(self.path)
         m.matrix = deepcopy(self.matrix)
         p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x][p.y+1]
@@ -87,7 +87,6 @@ class Matrix:
     # Move empty space down
     def moveDown(self):
         m = Matrix([])
-        m.path = deepcopy(self.path)
         m.matrix = deepcopy(self.matrix)
         p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x+1][p.y]
@@ -97,7 +96,6 @@ class Matrix:
     # Move empty space left
     def moveLeft(self):
         m = Matrix([])
-        m.path = deepcopy(self.path)
         m.matrix = deepcopy(self.matrix)
         p = self.search('')
         m.matrix[p.x][p.y] = self.matrix[p.x][p.y-1]
@@ -133,9 +131,6 @@ class Matrix:
         p = self.search('')
         if (((p.x+p.y)%2) == 1):
             ret += 1
-            print ("X = 1")
-        else:
-            print ("X = 0")
         return ret
 
     # Menghitung g(i) matriks
@@ -153,25 +148,6 @@ class Matrix:
                 ret+=1
             value+=1 
         return ret
-
-   # Print path
-    def printPath(self):
-        m = Matrix([])
-        m.matrix = deepcopy(self.matrix)
-        for i in range (len(self.path)):
-            print("Step ke " + str(i+1) + " : " + self.path[i])
-            if (self.path[i] == "U"):
-                m = m.moveUp()
-                m.print()
-            elif (self.path[i] == "R"):
-                m = m.moveRight()
-                m.print()
-            elif (self.path[i] == "D"):
-                m = m.moveDown()
-                m.print()
-            else:
-                m = m.moveLeft()
-                m.print()
 
 # Kelas Point
 class Point:
@@ -193,118 +169,167 @@ def readFile(input):
         matrix.append(num)
     return matrix
 
+
+
 # Main program
 index = 1
+track = []
 matHidup = []
 matGen = []
 empty = Point()
 stop = False
 stepBefore = ""
-matGen = set()
 
 # Load file
 matExpand = Matrix(readFile("input.txt"))
-matAwal = Matrix(readFile("input.txt"))
 
 # Print kondisi awal
 print("Kondisi Awal Puzzle")
 matExpand.print()
-print()
 
-# Nilai fungsi kurang untuk setiap petak
-print("Fungsi Kurang untuk setiap ubin")
-print("-------------------------")
-print ("Ubin-i" + "   FungsiKurang(i)")
-for i in range (1, 16):
-    if (i < 10):
-        print("   " + str(i) + "           " + str(matExpand.fungsiKurangI(i)))
-    else:
-        print("   " + str(i) + "          " + str(matExpand.fungsiKurangI(i)))
-print("   16" + "          " + str(matExpand.fungsiKurangI('')))
-print("-------------------------\n")
+track.append(matExpand)
+matGen.append(matExpand)
 
-# Nilai dari Kurang(i)+X
-Y = matExpand.fungsiKurangAll()
-print("Sigma (KURANG(i)) + X = " + str(Y))
+heapq.heapify(matHidup)
 
+print("Nilai fungsi kurang dari puzzle : " + str(matExpand.fungsiKurangAll()))
+
+# Priority : Up, Right, Down, Left
 # Start execution
 start_time = time.time()
-# Apakah Permasalahan dapat diselesaikan
-if (Y % 2 == 1):
-    print("Permasalahan Puzzle tidak dapat diselesaikan")
-else:
-    matGen.add(str(matExpand.matrix))
-    heapq.heapify(matHidup)
+while not(matExpand.myBobot() == 0):
+    empty = matExpand.search('')
 
-    # Priority : Up, Right, Down, Left
-    while not(matExpand.myBobot() == 0):
-        empty = matExpand.search('')
+    # Ekspan Up
+    if (empty.x != 0 and stepBefore != "down"):
+        matUp = matExpand.moveUp()
 
-        # Ekspan Up
-        if (empty.x != 0 and stepBefore != "down"):
-            matUp = matExpand.moveUp()
-            if not(str(matUp.matrix) in matGen):
-                matUp.aras = matExpand.aras + 1
-                matUp.bobot = matUp.myBobot() + matUp.aras
-                matUp.stepBefore = "up"
-                index += 1
-                matUp.index = index
-                heapq.heappush(matHidup,matUp)
-                matGen.add(str(matUp.matrix))
-                matUp.path.append("U")
-          
-        # Ekspan Right
-        if (empty.y != 3 and stepBefore != "left"):
-            matRight = matExpand.moveRight()
-            if not(str(matRight.matrix) in matGen):
-                matRight.aras = matExpand.aras + 1
-                matRight.bobot = matRight.myBobot() + matRight.aras    
-                matRight.stepBefore = "right"    
-                index += 1
-                matRight.index = index
-                heapq.heappush(matHidup,matRight)
-                matGen.add(str(matRight.matrix))
-                matRight.path.append("R")
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matUp.same(matGen[i])
+            i+=1
 
-        # Ekspan Down
-        if (empty.x != 3 and stepBefore != "up"):
-            matDown = matExpand.moveDown()
-            if not(str(matDown.matrix) in matGen):
-                matDown.aras = matExpand.aras + 1
-                matDown.bobot = matDown.myBobot() + matDown.aras
-                matDown.stepBefore = "down"
-                index += 1
-                matDown.index = index
-                heapq.heappush(matHidup,matDown)
-                matGen.add(str(matDown.matrix))
-                matDown.path.append("D")
+        # print(isSame)
+        if not(isSame):
+            matUp.aras = matExpand.aras + 1
+            matUp.bobot = matUp.myBobot() + matUp.aras
+            matUp.stepBefore = "up"
+            index += 1
+            matUp.index = index
+            heapq.heappush(matHidup,matUp)
+            matGen.append(matUp)
+            # matUp.print()
+            # print(matUp.bobot)
+    
+    # Ekspan Right
+    if (empty.y != 3 and stepBefore != "left"):
+        matRight = matExpand.moveRight()
 
-        # Ekspan Left
-        if (empty.y != 0 and stepBefore != "right"):
-            matLeft = matExpand.moveLeft()
-            if not(str(matLeft.matrix) in matGen):
-                matLeft.aras = matExpand.aras + 1
-                matLeft.bobot = matLeft.myBobot() + matLeft.aras
-                matLeft.stepBefore = "left"
-                index += 1
-                matLeft.index = index
-                heapq.heappush(matHidup,matLeft)
-                matGen.add(str(matLeft.matrix))
-                matLeft.path.append("L")
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matRight.same(matGen[i])
+            i+=1
 
-        # get matExpand from matHidup
-        matExpand = heapq.heappop(matHidup)
-        stepBefore = matExpand.stepBefore
-        
-    # Jumlah Simpul
-    print("Jumlah simpul yang dibangkitkan = " + str(matExpand.index))
-    print("Urutan penyelesaian = " + str(matExpand.path) + "\n")
-    matAwal.path = deepcopy(matExpand.path)
-    matAwal.printPath()
+        # print(isSame)
+        if not(isSame):
+            matRight.aras = matExpand.aras + 1
+            matRight.bobot = matRight.myBobot() + matRight.aras    
+            matRight.stepBefore = "right"    
+            index += 1
+            matRight.index = index
+            heapq.heappush(matHidup,matRight)
+            matGen.append(matRight)
+            # matRight.print()
+            # print(matRight.bobot)
 
-# End Execution
+    # Ekspan Down
+    if (empty.x != 3 and stepBefore != "up"):
+        matDown = matExpand.moveDown()
+
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matDown.same(matGen[i])
+            i+=1
+
+        # print(isSame)
+        if not(isSame):
+            matDown.aras = matExpand.aras + 1
+            matDown.bobot = matDown.myBobot() + matDown.aras
+            matDown.stepBefore = "down"
+            index += 1
+            matDown.index = index
+            heapq.heappush(matHidup,matDown)
+            matGen.append(matDown)
+            # matDown.print()
+            # print(matDown.bobot)
+
+    # Ekspan Left
+    if (empty.y != 0 and stepBefore != "right"):
+        matLeft = matExpand.moveLeft()
+
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matLeft.same(matGen[i])
+            i+=1
+
+        # print(isSame)
+        if not(isSame):
+            matLeft.aras = matExpand.aras + 1
+            matLeft.bobot = matLeft.myBobot() + matLeft.aras
+            matLeft.stepBefore = "left"
+            index += 1
+            matLeft.index = index
+            heapq.heappush(matHidup,matLeft)
+            matGen.append(matLeft)
+            # matLeft.print()
+            # print(matLeft.bobot)
+
+    print(len(matGen))
+    
+    # for x in matHidup:
+    #     print(str(x.index) + " ", end ='')
+    
+    # print()
+
+    # for x in matHidup:
+    #     print(str(x.bobot) + "(" + str(x.index) + ")" + " ", end ='')
+
+    # print()
+
+    # get matExpand from matHidup
+    # heapq.heapify(matHidup)
+    matExpand = heapq.heappop(matHidup)
+    # print("ini yg diekspan " + str(matExpand.bobot))
+
+    matExpand.print()
+    print("my bobot : " + str(matExpand.myBobot()))
+    print("aras : " + str(matExpand.aras))
+    print("step before : " + matExpand.stepBefore)
+    print("index : " + str(matExpand.index))
+    print()
+
+    
+
+    track.append(matExpand)
+    # aras = f(i)
+    stepBefore = matExpand.stepBefore
+
+
+
 end_time = time.time()
+# End Execution
+
+
+
+# Print langkah
+# for i in range (len(track)):
+#     track[i].print()
 
 # Execution time
 waktu = end_time - start_time
-print("Waktu eksekusi = " + str(waktu) + " seconds")
+print(waktu)
+
