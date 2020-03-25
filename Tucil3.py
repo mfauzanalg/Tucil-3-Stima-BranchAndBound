@@ -20,12 +20,12 @@ class Matrix:
 
     # Matrix less than
     def __lt__(self, other):
-        if self.bobot == other.bobot:
-            if self.index > other.index:
+        if self.myBobot() == other.myBobot():
+            if self.index < other.index:
                 return True
             else:
                 return False
-        elif self.bobot < other.bobot:
+        elif self.myBobot() < other.myBobot():
             return True
         else:
             return False
@@ -301,12 +301,12 @@ while not(matExpand.myBobot() == 0):
     # print("ini yg diekspan " + str(matExpand.bobot))
 
     # time.sleep(3)
-    # matExpand.print()
+    matExpand.print()
     print("my bobot : " + str(matExpand.myBobot()))
-    # print("aras : " + str(aras))
-    # print("step before : " + matExpand.stepBefore)
-    # print("index : " + str(matExpand.index))
-    # print()
+    print("aras : " + str(aras))
+    print("step before : " + matExpand.stepBefore)
+    print("index : " + str(matExpand.index))
+    print()
 
     
 
