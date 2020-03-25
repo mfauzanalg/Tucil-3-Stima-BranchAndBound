@@ -14,17 +14,26 @@ class Matrix:
     # Konstruktor
     def __init__(self, mat):
         self.matrix = mat
-        self.bobot = 0
+        self.bobot = -1
         self.stepBefore = ""
-        index = ""
+        index = 1
 
     # Matrix less than
     def __lt__(self, other):
-        return self.bobot < other.bobot
+        if self.bobot == other.bobot:
+            if self.index > other.index:
+                return True
+            else:
+                return False
+        elif self.bobot < other.bobot:
+            return True
+        else:
+            return False
 
-    # Matrix equal
-    def __eq__(self, other):
-        return self.bobot == other.bobot
+        
+
+    def same (self, other):
+        return self.matrix == other.matrix
 
     # Print matrix
     def print(self):
@@ -159,10 +168,13 @@ def readFile(input):
     return matrix
 
 
+
 # Main program
+index = 1
 aras = 1
 track = []
 matHidup = []
+matGen = []
 empty = Point()
 stop = False
 stepBefore = ""
@@ -171,12 +183,15 @@ stepBefore = ""
 matExpand = Matrix(readFile("input.txt"))
 
 # Print kondisi awal
-
 print("Kondisi Awal Puzzle")
 matExpand.print()
 
 track.append(matExpand)
+matGen.append(matExpand)
+
 heapq.heapify(matHidup)
+
+print("Nilai fungsi kurang dari puzzle : " + str(matExpand.fungsiKurangAll()))
 
 # Priority : Up, Right, Down, Left
 # Start execution
@@ -187,46 +202,132 @@ while not(matExpand.myBobot() == 0):
     # Ekspan Up
     if (empty.x != 0 and stepBefore != "down"):
         matUp = matExpand.moveUp()
-        matUp.bobot = matUp.myBobot() + aras
-        matUp.stepBefore = "up"
-        heapq.heappush(matHidup,matUp)
+
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matUp.same(matGen[i])
+            i+=1
+
+        # print(isSame)
+        if not(isSame):
+            matUp.bobot = matUp.myBobot() + aras
+            matUp.stepBefore = "up"
+            index += 1
+            matUp.index = index
+            heapq.heappush(matHidup,matUp)
+            matGen.append(matUp)
+            # matUp.print()
+            # print(matUp.bobot)
     
     # Ekspan Right
     if (empty.y != 3 and stepBefore != "left"):
         matRight = matExpand.moveRight()
-        matRight.bobot = matRight.myBobot() + aras    
-        matRight.stepBefore = "right"    
-        heapq.heappush(matHidup,matRight)
+
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matRight.same(matGen[i])
+            i+=1
+
+        # print(isSame)
+        if not(isSame):
+            matRight.bobot = matRight.myBobot() + aras    
+            matRight.stepBefore = "right"    
+            index += 1
+            matRight.index = index
+            heapq.heappush(matHidup,matRight)
+            matGen.append(matRight)
+            # matRight.print()
+            # print(matRight.bobot)
 
     # Ekspan Down
     if (empty.x != 3 and stepBefore != "up"):
         matDown = matExpand.moveDown()
-        matDown.bobot = matDown.myBobot() + aras
-        matDown.stepBefore = "down"
-        heapq.heappush(matHidup,matDown)
+
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matDown.same(matGen[i])
+            i+=1
+
+        # print(isSame)
+        if not(isSame):
+            matDown.bobot = matDown.myBobot() + aras
+            matDown.stepBefore = "down"
+            index += 1
+            matDown.index = index
+            heapq.heappush(matHidup,matDown)
+            matGen.append(matDown)
+            # matDown.print()
+            # print(matDown.bobot)
 
     # Ekspan Left
     if (empty.y != 0 and stepBefore != "right"):
         matLeft = matExpand.moveLeft()
-        matLeft.bobot = matLeft.myBobot() + aras
-        matLeft.stepBefore = "left"
-        heapq.heappush(matHidup,matLeft)
 
-    heapq.heapify(matHidup)
+        isSame = False
+        i = 0
+        while (i < len(matGen) and not(isSame)) :
+            isSame = matLeft.same(matGen[i])
+            i+=1
+
+        # print(isSame)
+        if not(isSame):
+            matLeft.bobot = matLeft.myBobot() + aras
+            matLeft.stepBefore = "left"
+            index += 1
+            matLeft.index = index
+            heapq.heappush(matHidup,matLeft)
+            matGen.append(matLeft)
+            # matLeft.print()
+            # print(matLeft.bobot)
+
+    print(len(matGen))
+    
+    # for x in matHidup:
+    #     print(str(x.index) + " ", end ='')
+    
+    # print()
+
+    # for x in matHidup:
+    #     print(str(x.bobot) + "(" + str(x.index) + ")" + " ", end ='')
+
+    # print()
+
     # get matExpand from matHidup
+    # heapq.heapify(matHidup)
     matExpand = heapq.heappop(matHidup)
+    # print("ini yg diekspan " + str(matExpand.bobot))
+
+    # time.sleep(3)
+    # matExpand.print()
+    print("my bobot : " + str(matExpand.myBobot()))
+    # print("aras : " + str(aras))
+    # print("step before : " + matExpand.stepBefore)
+    # print("index : " + str(matExpand.index))
+    # print()
+
+    
+
+
     track.append(matExpand)
     # aras = f(i)
     aras += 1
     stepBefore = matExpand.stepBefore
+
+
+
 end_time = time.time()
 # End Execution
 
 
 
 # Print langkah
-for i in range (len(track)):
-    track[i].print()
+# for i in range (len(track)):
+#     track[i].print()
 
 # Execution time
-waktu = start_time - end_time
+waktu = end_time - start_time
+print(waktu)
+
